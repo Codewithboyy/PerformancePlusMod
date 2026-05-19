@@ -54,9 +54,6 @@ public class GraphicsOptimizer {
             options.getEntityShadows().setValue(false);
         }
         
-        // Disable vignette (minimal visual impact, slight performance gain)
-        options.getVignette().setValue(false);
-        
         // Reduce distortion effects
         options.getDistortionEffectScale().setValue(0.5);
         
@@ -77,14 +74,13 @@ public class GraphicsOptimizer {
         
         // Absolute minimum for maximum FPS
         options.getGraphicsMode().setValue(GraphicsMode.FAST);
-        options.getRenderDistance().setValue(4); // Very low render distance
+        options.getViewDistance().setValue(4); // Very low render distance
         options.getEntityDistanceScaling().setValue(0.5); // Half entity render distance
         options.getMaxFps().setValue(300); // Cap at 300 FPS
         options.getEnableVsync().setValue(false); // Disable VSync
         options.getBobView().setValue(false);
         options.getCloudRenderMode().setValue(net.minecraft.client.option.CloudRenderMode.OFF);
         options.getEntityShadows().setValue(false);
-        options.getVignette().setValue(false);
         options.getBiomeBlendRadius().setValue(0);
         options.getFov().setValue(90.0); // Standard FOV
         
@@ -105,7 +101,7 @@ public class GraphicsOptimizer {
         
         // Balance between quality and performance
         options.getGraphicsMode().setValue(GraphicsMode.FAST);
-        options.getRenderDistance().setValue(8); // Moderate render distance
+        options.getViewDistance().setValue(8); // Moderate render distance
         options.getEntityDistanceScaling().setValue(0.75);
         options.getMaxFps().setValue(300);
         options.getEnableVsync().setValue(false);
@@ -128,7 +124,7 @@ public class GraphicsOptimizer {
         
         // Better visuals, still optimized
         options.getGraphicsMode().setValue(GraphicsMode.FANCY);
-        options.getRenderDistance().setValue(12);
+        options.getViewDistance().setValue(12);
         options.getEntityDistanceScaling().setValue(1.0);
         options.getMaxFps().setValue(240);
         options.getEnableVsync().setValue(false);
@@ -161,9 +157,9 @@ public class GraphicsOptimizer {
         if (client == null || client.options == null) return "N/A";
         
         GameOptions options = client.options;
-        return String.format("Graphics: %s | RD: %d | Entities: %.0f%% | Shadows: %s", 
+        return String.format("Graphics: %s | VD: %d | Entities: %.0f%% | Shadows: %s", 
             options.getGraphicsMode().getValue().toString(),
-            options.getRenderDistance().getValue(),
+            options.getViewDistance().getValue(),
             options.getEntityDistanceScaling().getValue() * 100,
             options.getEntityShadows().getValue() ? "ON" : "OFF");
     }

@@ -26,7 +26,10 @@ public class EntityOptimizer {
         
         // Count visible entities for monitoring
         if (tickCounter % 100 == 0) {
-            int entityCount = client.world.getEntities().size();
+            int entityCount = 0;
+            for (net.minecraft.entity.Entity entity : client.world.getEntities()) {
+                entityCount++;
+            }
             if (entityCount > 200) {
                 PerformancePlus.LOGGER.debug("High entity count detected: {} entities", entityCount);
             }
@@ -63,7 +66,12 @@ public class EntityOptimizer {
     
     public static String getStats() {
         MinecraftClient client = MinecraftClient.getInstance();
-        int entityCount = client.world != null ? client.world.getEntities().size() : 0;
+        int entityCount = 0;
+        if (client.world != null) {
+            for (net.minecraft.entity.Entity entity : client.world.getEntities()) {
+                entityCount++;
+            }
+        }
         return String.format("Entities: %d | Cull: %.0f blocks | Update: every %d ticks", 
             entityCount, cullDistance, entityUpdateInterval);
     }
