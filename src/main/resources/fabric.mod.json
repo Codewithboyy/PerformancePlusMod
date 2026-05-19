@@ -1,0 +1,37 @@
+{
+  "schemaVersion": 1,
+  "id": "performanceplus",
+  "version": "${version}",
+  "name": "Performance Plus",
+  "description": "A comprehensive performance optimization mod for Minecraft",
+  "authors": [
+    "Your Name"
+  ],
+  "contact": {
+    "homepage": "https://github.com/yourusername/performanceplus",
+    "sources": "https://github.com/yourusername/performanceplus"
+  },
+  "license": "MIT",
+  "icon": "assets/performanceplus/icon.png",
+  "environment": "*",
+  "entrypoints": {
+    "main": [
+      "com.performanceplus.PerformancePlus"
+    ],
+    "client": [
+      "com.performanceplus.PerformancePlusClient"
+    ]
+  },
+  "mixins": [
+    "performanceplus.mixins.json"
+  ],
+  "depends": {
+    "fabricloader": ">=0.15.0",
+    "minecraft": "~1.20.1",
+    "java": ">=17",
+    "fabric-api": "*"
+  },
+  "suggests": {
+    "another-mod": "*"
+  }
+}

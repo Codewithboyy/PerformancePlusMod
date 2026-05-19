@@ -1,0 +1,34 @@
+# Gradle
+.gradle/
+build/
+out/
+classes/
+
+# Eclipse
+.classpath
+.project
+.settings/
+
+# IntelliJ IDEA
+.idea/
+*.iml
+*.ipr
+*.iws
+
+# Visual Studio Code
+.vscode/
+
+# MacOS
+.DS_Store
+
+# Fabric
+run/
+
+# Logs
+logs/
+*.log
+
+# Temporary files
+*.tmp
+*.bak
+*~
