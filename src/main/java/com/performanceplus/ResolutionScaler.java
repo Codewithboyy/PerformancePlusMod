@@ -2,90 +2,146 @@ package com.performanceplus;
 
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.gl.Framebuffer;
+import net.minecraft.client.option.GraphicsMode;
 
 public class ResolutionScaler {
-    private static float renderScale = 0.75f; // 75% of native resolution
-    private static boolean autoScale = true;
-    private static int targetFPS = 300;
-    private static int checkInterval = 60; // Check every 60 ticks (3 seconds)
+
+    private static boolean autoOptimize = true;
+    private static int targetFPS = 120;
+    private static int checkInterval = 200;
     private static int tickCounter = 0;
-    
-    // Quality presets
-    public static final float ULTRA_PERFORMANCE = 0.5f;  // 50% resolution (max FPS)
-    public static final float HIGH_PERFORMANCE = 0.65f;  // 65% resolution
-    public static final float BALANCED = 0.75f;          // 75% resolution (default)
-    public static final float QUALITY = 0.85f;           // 85% resolution
-    public static final float ULTRA_QUALITY = 1.0f;      // 100% native resolution
-    
+
+    private static boolean lowGraphicsEnabled = false;
+
     public static void init() {
         ClientTickEvents.END_CLIENT_TICK.register(ResolutionScaler::onClientTick);
-        PerformancePlus.LOGGER.info("Resolution Scaler initialized at {}% render scale", (int)(renderScale * 100));
+
+        PerformancePlus.LOGGER.info("Performance Optimizer initialized");
     }
-    
+
     private static void onClientTick(MinecraftClient client) {
-        if (!autoScale || client.world == null) return;
-        
+
+        if (!autoOptimize || client.world == null) {
+            return;
+        }
+
         tickCounter++;
+
         if (tickCounter >= checkInterval) {
             tickCounter = 0;
-            adjustResolutionBasedOnFPS();
+            optimizePerformance(client);
         }
     }
-    
-    private static void adjustResolutionBasedOnFPS() {
+
+    private static void optimizePerformance(MinecraftClient client) {
+
         double currentFPS = FPSOptimizer.getAverageFPS();
-        
-        if (currentFPS < targetFPS - 50 && renderScale > ULTRA_PERFORMANCE) {
-            // FPS too low, reduce resolution
-            renderScale = Math.max(ULTRA_PERFORMANCE, renderScale - 0.05f);
-            applyRenderScale();
-            PerformancePlus.LOGGER.info("Lowering render scale to {}% (Current FPS: {})", 
-                (int)(renderScale * 100), (int)currentFPS);
-        } else if (currentFPS > targetFPS + 50 && renderScale < ULTRA_QUALITY) {
-            // FPS very high, can increase quality
-            renderScale = Math.min(ULTRA_QUALITY, renderScale + 0.05f);
-            applyRenderScale();
-            PerformancePlus.LOGGER.info("Increasing render scale to {}% (Current FPS: {})", 
-                (int)(renderScale * 100), (int)currentFPS);
+
+        if (currentFPS < targetFPS && !lowGraphicsEnabled) {
+
+            enablePerformanceMode(client);
+
+            lowGraphicsEnabled = true;
+
+            PerformancePlus.LOGGER.info(
+                "Performance mode enabled (FPS: {})",
+                (int) currentFPS
+            );
+
+        } else if (currentFPS > targetFPS + 40 && lowGraphicsEnabled) {
+
+            restoreGraphics(client);
+
+            lowGraphicsEnabled = false;
+
+            PerformancePlus.LOGGER.info(
+                "Graphics restored (FPS: {})",
+                (int) currentFPS
+            );
         }
     }
-    
-    public static void setRenderScale(float scale) {
-        renderScale = Math.max(0.25f, Math.min(1.0f, scale));
-        applyRenderScale();
-        PerformancePlus.LOGGER.info("Manual render scale set to {}%", (int)(renderScale * 100));
-    }
-    
-    public static void setPreset(String preset) {
-        switch (preset.toLowerCase()) {
-            case "ultra_performance":
-                setRenderScale(ULTRA_PERFORMANCE);
-                break;
-            case "high_performance":
-                setRenderScale(HIGH_PERFORMANCE);
-                break;
-            case "balanced":
-                setRenderScale(BALANCED);
-                break;
-            case "quality":
-                setRenderScale(QUALITY);
-                break;
-            case "ultra_quality":
-                setRenderScale(ULTRA_QUALITY);
-                break;
-            default:
-                PerformancePlus.LOGGER.warn("Unknown preset: {}", preset);
+
+    private static void enablePerformanceMode(MinecraftClient client) {
+
+        if (client.options == null) {
+            return;
         }
+
+        client.options.getParticles().setValue(
+            net.minecraft.client.option.ParticlesMode.MINIMAL
+        );
+
+        client.options.getGraphicsMode().setValue(
+            GraphicsMode.FAST
+        );
+
+        client.options.getBiomeBlendRadius().setValue(0);
+
+        client.options.getEntityDistanceScaling().setValue(0.75D);
+
+        client.options.getCloudRenderMode().setValue(
+            net.minecraft.client.option.CloudRenderMode.OFF
+        );
+
+        client.options.setGuiScale(2);
+
+        client.options.getMipmapLevels().setValue(0);
+
+        client.worldRenderer.reload();
     }
-    
-    private static void applyRenderScale() {
-        MinecraftClient client = MinecraftClient.getInstance();
-        if (client != null && client.getWindow() != null) {
-            int windowWidth = client.getWindow().getWidth();
-            int windowHeight = client.getWindow().getHeight();
-            
-            int scaledWidth = (int)(windowWidth * renderScale);
+
+    private static void restoreGraphics(MinecraftClient client) {
+
+        if (client.options == null) {
+            return;
+        }
+
+        client.options.getParticles().setValue(
+            net.minecraft.client.option.ParticlesMode.ALL
+        );
+
+        client.options.getGraphicsMode().setValue(
+            GraphicsMode.FANCY
+        );
+
+        client.options.getBiomeBlendRadius().setValue(2);
+
+        client.options.getEntityDistanceScaling().setValue(1.0D);
+
+        client.options.getCloudRenderMode().setValue(
+            net.minecraft.client.option.CloudRenderMode.FANCY
+        );
+
+        client.options.getMipmapLevels().setValue(4);
+
+        client.worldRenderer.reload();
+    }
+
+    public static void setAutoOptimize(boolean enabled) {
+        autoOptimize = enabled;
+    }
+
+    public static void setTargetFPS(int fps) {
+        targetFPS = Math.max(60, Math.min(240, fps));
+    }
+
+    public static boolean isAutoOptimizeEnabled() {
+        return autoOptimize;
+    }
+
+    public static int getTargetFPS() {
+        return targetFPS;
+    }
+
+    public static String getStats() {
+
+        return String.format(
+            "Target FPS: %d | Performance Mode: %s",
+            targetFPS,
+            lowGraphicsEnabled ? "ON" : "OFF"
+        );
+    }
+}erScale);
             int scaledHeight = (int)(windowHeight * renderScale);
             
             // Update framebuffer size

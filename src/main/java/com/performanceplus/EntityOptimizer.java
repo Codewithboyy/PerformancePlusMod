@@ -2,66 +2,131 @@ package com.performanceplus;
 
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.render.entity.EntityRenderDispatcher;
+import net.minecraft.entity.Entity;
 
 public class EntityOptimizer {
-    private static boolean optimizeDistantEntities = true;
-    private static double cullDistance = 64.0; // Cull entities beyond 64 blocks
-    private static boolean reduceShadows = true;
-    private static int entityUpdateInterval = 2; // Update entities every 2 ticks instead of every tick
-    private static int tickCounter = 0;
-    
+
+    private static int entityCount = 0;
+
+    private static int hostileCount = 0;
+
+    private static int passiveCount = 0;
+
+    private static int itemCount = 0;
+
+    private static int checkTimer = 0;
+
+    private static final int CHECK_INTERVAL = 40;
+
     public static void init() {
-        ClientTickEvents.END_CLIENT_TICK.register(EntityOptimizer::onClientTick);
-        PerformancePlus.LOGGER.info("Entity Optimizer initialized - Cull distance: {} blocks", cullDistance);
+
+        ClientTickEvents.END_CLIENT_TICK.register(
+            EntityOptimizer::onClientTick
+        );
+
+        PerformancePlus.LOGGER.info(
+            "Entity Optimizer initialized"
+        );
     }
-    
-    private static void onClientTick(MinecraftClient client) {
-        tickCounter++;
-        
-        if (client.world == null || client.player == null) return;
-        
-        // Skip entity updates on some ticks for performance
-        if (tickCounter % entityUpdateInterval != 0) return;
-        
-        // Count visible entities for monitoring
-        if (tickCounter % 100 == 0) {
-            int entityCount = 0;
-            for (net.minecraft.entity.Entity entity : client.world.getEntities()) {
-                entityCount++;
-            }
-            if (entityCount > 200) {
-                PerformancePlus.LOGGER.debug("High entity count detected: {} entities", entityCount);
+
+    private static void onClientTick(
+        MinecraftClient client
+    ) {
+
+        if (client == null || client.world == null) {
+            return;
+        }
+
+        checkTimer++;
+
+        if (checkTimer >= CHECK_INTERVAL) {
+
+            checkTimer = 0;
+
+            scanEntities(client);
+        }
+    }
+
+    private static void scanEntities(
+        MinecraftClient client
+    ) {
+
+        entityCount = 0;
+        hostileCount = 0;
+        passiveCount = 0;
+        itemCount = 0;
+
+        for (Entity entity : client.world.getEntities()) {
+
+            entityCount++;
+
+            String name =
+                entity.getType()
+                      .toString()
+                      .toLowerCase();
+
+            if (name.contains("item")) {
+
+                itemCount++;
+
+            } else if (
+                name.contains("zombie") ||
+                name.contains("skeleton") ||
+                name.contains("creeper") ||
+                name.contains("spider") ||
+                name.contains("enderman")
+            ) {
+
+                hostileCount++;
+
+            } else {
+
+                passiveCount++;
             }
         }
     }
-    
-    public static void setCullDistance(double distance) {
-        cullDistance = Math.max(16.0, Math.min(256.0, distance));
-        PerformancePlus.LOGGER.info("Entity cull distance set to {} blocks", cullDistance);
+
+    public static boolean isEntityHeavy() {
+
+        return entityCount > 300;
     }
-    
-    public static void setEntityUpdateInterval(int interval) {
-        entityUpdateInterval = Math.max(1, Math.min(5, interval));
-        PerformancePlus.LOGGER.info("Entity update interval set to {} ticks", entityUpdateInterval);
+
+    public static boolean isTooManyItems() {
+
+        return itemCount > 100;
     }
-    
-    public static void setOptimizeDistantEntities(boolean enabled) {
-        optimizeDistantEntities = enabled;
-        PerformancePlus.LOGGER.info("Distant entity optimization: {}", enabled ? "enabled" : "disabled");
+
+    public static int getEntityCount() {
+
+        return entityCount;
     }
-    
-    public static void setReduceShadows(boolean enabled) {
-        reduceShadows = enabled;
-        PerformancePlus.LOGGER.info("Shadow reduction: {}", enabled ? "enabled" : "disabled");
+
+    public static int getHostileCount() {
+
+        return hostileCount;
     }
-    
-    public static double getCullDistance() {
-        return cullDistance;
+
+    public static int getPassiveCount() {
+
+        return passiveCount;
     }
-    
-    public static boolean isOptimizeDistantEntities() {
-        return optimizeDistantEntities;
+
+    public static int getItemCount() {
+
+        return itemCount;
+    }
+
+    public static String getStats() {
+
+        return String.format(
+            "Entities: %d | Hostile: %d | Passive: %d | Items: %d",
+            entityCount,
+            hostileCount,
+            passiveCount,
+            itemCount
+        );
+    }
+}imizeDistantEntities;
     }
     
     public static String getStats() {
