@@ -63,10 +63,10 @@ This mod is specifically optimized for integrated graphics (Intel UHD, Iris Xe, 
 
 ## Requirements
 
-- Minecraft Java Edition 1.20.1
-- Fabric Loader 0.15.0 or higher
-- Fabric API 0.92.0 or higher
-- Java 17 or higher
+- Minecraft Java Edition 1.21.x (1.21, 1.21.1)
+- Fabric Loader 0.14.0 or higher
+- Fabric API 0.107.0 or higher
+- Java 21 or higher
 
 ## Building from Source (On Mobile)
 
@@ -97,7 +97,7 @@ The compiled mod will be in `build/libs/performanceplus-1.0.0.jar`
 
 ## Building on Desktop/PC
 
-1. Make sure you have **Java 17** or higher installed
+1. Make sure you have **Java 21** or higher installed
 2. Open terminal/command prompt in the project directory
 3. Run:
    ```bash
