@@ -82,7 +82,7 @@ public class GraphicsOptimizer {
         options.getCloudRenderMode().setValue(net.minecraft.client.option.CloudRenderMode.OFF);
         options.getEntityShadows().setValue(false);
         options.getBiomeBlendRadius().setValue(0);
-        options.getFov().setValue(90.0); // Standard FOV
+        options.getFov().setValue(90); // Standard FOV
         
         // Particle settings
         ParticleOptimizer.setPreset("minimal");
