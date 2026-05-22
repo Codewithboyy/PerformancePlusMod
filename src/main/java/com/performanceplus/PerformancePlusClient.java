@@ -9,11 +9,13 @@ public class PerformancePlusClient implements ClientModInitializer {
 		
 		// Initialize client-side optimizations
 		FPSOptimizer.init();
-		ResolutionScaler.init();
 		EntityOptimizer.init();
 		ParticleOptimizer.init();
 		GraphicsOptimizer.init();
 		
 		PerformancePlus.LOGGER.info("All client optimizations loaded - targeting 300+ FPS!");
+	}
+}
+argeting 300+ FPS!");
 	}
 }
