@@ -3,6 +3,7 @@ package com.performanceplus.mixin;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.particle.Particle;
 import net.minecraft.client.particle.ParticleManager;
+import net.minecraft.util.math.Box;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
@@ -27,9 +28,15 @@ public class ParticleManagerMixin {
             return;
         }
 
-        double dx = particle.x - client.player.getX();
-        double dy = particle.y - client.player.getY();
-        double dz = particle.z - client.player.getZ();
+        Box box = particle.getBoundingBox();
+
+        double px = box.minX;
+        double py = box.minY;
+        double pz = box.minZ;
+
+        double dx = px - client.player.getX();
+        double dy = py - client.player.getY();
+        double dz = pz - client.player.getZ();
 
         double distanceSq = dx * dx + dy * dy + dz * dz;
 
