@@ -16,6 +16,3 @@ public class PerformancePlusClient implements ClientModInitializer {
 		PerformancePlus.LOGGER.info("All client optimizations loaded - targeting 300+ FPS!");
 	}
 }
-argeting 300+ FPS!");
-	}
-}
