@@ -49,14 +49,15 @@ Designed to work better with:
 # Requirements
 
 - Minecraft Fabric
+- Fabric Language Kotlin
 - Fabric API
-- Java 17
+- Java 21
 
 ---
 
 # Supported Version
 
-- Minecraft 1.21.1
+- Minecraft 1.21.1-1.21.11
 
 ---
 
