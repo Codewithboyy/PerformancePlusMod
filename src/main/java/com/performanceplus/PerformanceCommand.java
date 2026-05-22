@@ -15,13 +15,11 @@ public class PerformanceCommand {
 
                     dispatcher.register(
                             CommandManager.literal("perfstats")
-                                    .requires(source -> source.hasPermissionLevel(2))
-                                    .executes(PerformanceCommand::executeStats)
+                                     .executes(PerformanceCommand::executeStats)
                     );
 
                     dispatcher.register(
                             CommandManager.literal("performanceplus")
-                                    .requires(source -> source.hasPermissionLevel(2))
                                     .executes(PerformanceCommand::executeMain)
                     );
                 }
