@@ -11,9 +11,11 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 @Mixin(ParticleManager.class)
 public class ParticleManagerMixin {
 
-    @Inject(method = "addParticle(Lnet/minecraft/client/particle/Particle;)V",
+    @Inject(
+            method = "addParticle(Lnet/minecraft/client/particle/Particle;)V",
             at = @At("HEAD"),
-            cancellable = true)
+            cancellable = true
+    )
     private void performanceplus$limitFarParticles(
             Particle particle,
             CallbackInfo ci
@@ -25,14 +27,12 @@ public class ParticleManagerMixin {
             return;
         }
 
-        double distanceSq =
-                client.player.squaredDistanceTo(
-                        particle.getX(),
-                        particle.getY(),
-                        particle.getZ()
-                );
+        double dx = particle.x - client.player.getX();
+        double dy = particle.y - client.player.getY();
+        double dz = particle.z - client.player.getZ();
 
-        // Skip extremely far particles
+        double distanceSq = dx * dx + dy * dy + dz * dz;
+
         if (distanceSq > 2500) {
             ci.cancel();
         }

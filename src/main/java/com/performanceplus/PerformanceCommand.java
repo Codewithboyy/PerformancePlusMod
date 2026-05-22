@@ -1,6 +1,5 @@
 package com.performanceplus;
 
-import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.context.CommandContext;
 import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
 import net.minecraft.server.command.CommandManager;
@@ -8,48 +7,80 @@ import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.text.Text;
 
 public class PerformanceCommand {
-	
-	public static void register() {
-		CommandRegistrationCallback.EVENT.register((dispatcher, registryAccess, environment) -> {
-			// Performance statistics command
-			dispatcher.register(CommandManager.literal("perfstats")
-				.requires(source -> source.hasPermissionLevel(2))
-				.executes(PerformanceCommand::executeStats));
-			
-			// Apply preset commands
-			dispatcher.register(CommandManager.literal("perfpreset")
-				.requires(source -> source.hasPermissionLevel(2))
-				.then(CommandManager.literal("ultra_performance")
-					.executes(ctx -> executePreset(ctx, "ultra_performance")))
-				.then(CommandManager.literal("balanced")
-					.executes(ctx -> executePreset(ctx, "balanced")))
-				.then(CommandManager.literal("quality")
-					.executes(ctx -> executePreset(ctx, "quality"))));
-			
-			// Resolution scale command
-			dispatcher.register(CommandManager.literal("perfscale")
-				.requires(source -> source.hasPermissionLevel(2))
-				.then(CommandManager.literal("ultra_performance")
-					.executes(ctx -> executeScalePreset(ctx, "ultra_performance")))
-				.then(CommandManager.literal("high_performance")
-					.executes(ctx -> executeScalePreset(ctx, "high_performance")))
-				.then(CommandManager.literal("balanced")
-					.executes(ctx -> executeScalePreset(ctx, "balanced")))
-				.then(CommandManager.literal("quality")
-					.executes(ctx -> executeScalePreset(ctx, "quality")))
-				.then(CommandManager.literal("ultra_quality")
-					.executes(ctx -> executeScalePreset(ctx, "ultra_quality"))));
-		});
-	}
-	
-	private static int executeStats(CommandContext<ServerCommandSource> context) {
-		ServerCommandSource source = context.getSource();
-		
-		// Send performance statistics to player
-		source.sendFeedback(() -> Text.literal("§6§l=== Performance Plus Statistics ==="), false);
-		source.sendFeedback(() -> Text.literal(""), false);
-		source.sendFeedback(() -> Text.literal("§e" + MemoryOptimizer.getMemoryStats()), false);
-		source.sendFeedback(() -> Text.literal("§e" + ChunkOptimizer.getChunkStats()), false);
+
+    public static void register() {
+
+        CommandRegistrationCallback.EVENT.register(
+                (dispatcher, registryAccess, environment) -> {
+
+                    dispatcher.register(
+                            CommandManager.literal("perfstats")
+                                    .requires(source -> source.hasPermissionLevel(2))
+                                    .executes(PerformanceCommand::executeStats)
+                    );
+
+                    dispatcher.register(
+                            CommandManager.literal("performanceplus")
+                                    .requires(source -> source.hasPermissionLevel(2))
+                                    .executes(PerformanceCommand::executeMain)
+                    );
+                }
+        );
+    }
+
+    private static int executeMain(
+            CommandContext<ServerCommandSource> context
+    ) {
+
+        ServerCommandSource source = context.getSource();
+
+        source.sendFeedback(
+                () -> Text.literal("§aPerformancePlus Loaded"),
+                false
+        );
+
+        return 1;
+    }
+
+    private static int executeStats(
+            CommandContext<ServerCommandSource> context
+    ) {
+
+        ServerCommandSource source = context.getSource();
+
+        source.sendFeedback(
+                () -> Text.literal("§6§l=== PerformancePlus ==="),
+                false
+        );
+
+        source.sendFeedback(
+                () -> Text.literal("§7Adaptive Visibility Optimization"),
+                false
+        );
+
+        source.sendFeedback(
+                () -> Text.literal("§7Underground Chunk Optimization"),
+                false
+        );
+
+        source.sendFeedback(
+                () -> Text.literal("§7Entity Frustum Culling"),
+                false
+        );
+
+        source.sendFeedback(
+                () -> Text.literal("§7Particle Distance Culling"),
+                false
+        );
+
+        source.sendFeedback(
+                () -> Text.literal("§aOptimizer Running"),
+                false
+        );
+
+        return 1;
+    }
+}e);
 		source.sendFeedback(() -> Text.literal("§e" + FPSOptimizer.getFPSStats()), false);
 		source.sendFeedback(() -> Text.literal(""), false);
 		source.sendFeedback(() -> Text.literal("§b§l--- Render Optimizations ---"), false);
