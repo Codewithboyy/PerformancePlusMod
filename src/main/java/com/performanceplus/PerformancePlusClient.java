@@ -8,6 +8,8 @@ public class PerformancePlusClient implements ClientModInitializer {
 		PerformancePlus.LOGGER.info("Performance Plus client initialized!");
 		
 		// Initialize client-side optimizations
+                ChunkScheduler.init();
+                OcclusionEngine.init();
 		FPSOptimizer.init();
 		EntityOptimizer.init();
 		ParticleOptimizer.init();
