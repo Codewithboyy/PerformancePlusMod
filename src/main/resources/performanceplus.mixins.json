@@ -8,6 +8,7 @@
   "client": [
     "WorldRendererMixin",
     "EntityRenderDispatcherMixin",
+    "EntityRendererMixin",
     "ParticleManagerMixin"
   ],
   "injectors": {
