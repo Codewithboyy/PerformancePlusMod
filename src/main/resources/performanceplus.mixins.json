@@ -10,7 +10,9 @@
     "BlockEntityRendererMixin",
     "EntityRenderDispatcherMixin",
     "EntityRendererMixin",
-    "ParticleManagerMixin"
+    "ParticleManagerMixin",
+    "ParticleBudgetMixin",
+    "EntityTickMixin"
   ],
   "injectors": {
     "defaultRequire": 1
