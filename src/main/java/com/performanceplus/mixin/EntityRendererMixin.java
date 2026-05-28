@@ -1,6 +1,7 @@
 package com.performanceplus.mixin;
 
 import com.performanceplus.EntityRenderOptimizer;
+import com.performanceplus.renderer.VisibilityEngine;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.render.entity.EntityRenderer;
 import net.minecraft.entity.Entity;
@@ -42,6 +43,19 @@ public class EntityRendererMixin<T extends Entity> {
                 );
 
         if (!shouldRender) {
+            boolean visible =
+                VisibilityEngine.isVisible(
+                    entity.getX(),
+                    entity.getY(),
+                    entity.getZ()
+                );
+
+            if (!visible) {
+
+                cir.setReturnValue(false);
+
+                return;
+            }
             cir.setReturnValue(false);
         }
     }

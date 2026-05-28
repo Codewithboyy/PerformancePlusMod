@@ -1,9 +1,16 @@
+
 package com.performanceplus;
 
+import com.performanceplus.renderer.AsyncChunkBuilder;
+
 import net.fabricmc.api.ClientModInitializer;
+
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 
-public class PerformancePlusClient implements ClientModInitializer {
+import net.fabricmc.loader.api.FabricLoader;
+
+public class PerformancePlusClient
+        implements ClientModInitializer {
 
     private static boolean initialized = false;
 
@@ -11,7 +18,7 @@ public class PerformancePlusClient implements ClientModInitializer {
     public void onInitializeClient() {
 
         PerformancePlus.LOGGER.info(
-                "Performance Plus client initialized!"
+                "Performance Plus loading..."
         );
 
         ClientTickEvents.END_CLIENT_TICK.register(client -> {
@@ -28,9 +35,66 @@ public class PerformancePlusClient implements ClientModInitializer {
 
                 OptimizationProfiles.applyProfile();
 
-                ChunkScheduler.init();
+
+
+                // Mod compatibility detection
+
+                if (FabricLoader.getInstance()
+                        .isModLoaded("sodium")) {
+
+                    PerformancePlus.LOGGER.info(
+                            "Sodium detected"
+                    );
+                }
+
+                if (FabricLoader.getInstance()
+                        .isModLoaded("lithium")) {
+
+                    PerformancePlus.LOGGER.info(
+                            "Lithium detected"
+                    );
+                }
+
+                if (FabricLoader.getInstance()
+                        .isModLoaded("ferritecore")) {
+
+                    PerformancePlus.LOGGER.info(
+                            "FerriteCore detected"
+                    );
+                }
+
+                if (FabricLoader.getInstance()
+                        .isModLoaded("immediatelyfast")) {
+
+                    PerformancePlus.LOGGER.info(
+                            "ImmediatelyFast detected"
+                    );
+                }
+
+                if (FabricLoader.getInstance()
+                        .isModLoaded("entityculling")) {
+
+                    PerformancePlus.LOGGER.info(
+                            "EntityCulling detected"
+                    );
+                }
+
+                if (FabricLoader.getInstance()
+                        .isModLoaded("moreculling")) {
+
+                    PerformancePlus.LOGGER.info(
+                            "MoreCulling detected"
+                    );
+                }
+
+
+
+                // Initialize systems
 
                 AsyncChunkBuilder.init();
+
+                ChunkScheduler.init();
+
                 OcclusionEngine.init();
 
                 FPSOptimizer.init();
@@ -41,16 +105,25 @@ public class PerformancePlusClient implements ClientModInitializer {
 
                 GraphicsOptimizer.init();
 
+
+
                 PerformancePlus.LOGGER.info(
-                        "Adaptive optimization initialized!"
+                        "Performance Plus initialized!"
+                );
+
+                PerformancePlus.LOGGER.info(
+                        "Device Type: {}",
+                        SystemDetector.getDeviceType()
                 );
             }
 
+
+
+            // Runtime systems
+
             ParticleBudgetSystem.resetFrameBudget();
+
             DynamicChunkLimiter.resetFrame();
-            DynamicChunkLimiter.updateDynamicBudget(
-                FPSOptimizer.getAverageFPS()
-            );
         });
     }
 }
