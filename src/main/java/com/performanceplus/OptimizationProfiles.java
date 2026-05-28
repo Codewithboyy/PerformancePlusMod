@@ -16,6 +16,8 @@ public class OptimizationProfiles {
 
                 ChunkScheduler
                         .setAggressiveMode(true);
+                DynamicChunkLimiter
+                        .setAggressiveMode(true);
 
                 PerformancePlus.LOGGER.info(
                         "Applied LOW_END_MOBILE profile"
@@ -38,6 +40,9 @@ public class OptimizationProfiles {
 
                 EntityRenderOptimizer
                         .setMaxRenderDistance(80);
+
+                DynamicChunkLimiter
+                        .setAggressiveMode(false);
 
                 PerformancePlus.LOGGER.info(
                         "Applied HIGH_END_MOBILE profile"
