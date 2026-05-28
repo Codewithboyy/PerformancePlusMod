@@ -32,17 +32,6 @@ dependencies {
     modImplementation "net.fabricmc:fabric-loader:${project.loader_version}"
 
     modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_version}"
-
-
-
-    // Optimization mod compatibility
-    modCompileOnly "maven.modrinth:sodium:mc1.21.1-0.6.0-fabric"
-
-    modCompileOnly "maven.modrinth:lithium:mc1.21.1-0.13.0"
-
-    modCompileOnly "maven.modrinth:ferrite-core:7.0.0"
-
-    modCompileOnly "maven.modrinth:entityculling:1.7.2"
 }
 
 processResources {
