@@ -30,6 +30,7 @@ public class PerformancePlusClient implements ClientModInitializer {
 
                 ChunkScheduler.init();
 
+                AsyncChunkBuilder.init();
                 OcclusionEngine.init();
 
                 FPSOptimizer.init();
