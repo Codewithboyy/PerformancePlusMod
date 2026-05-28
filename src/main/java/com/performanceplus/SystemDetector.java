@@ -1,7 +1,5 @@
 package com.performanceplus;
 
-import net.minecraft.client.MinecraftClient;
-
 public class SystemDetector {
 
     public enum DeviceType {
@@ -31,37 +29,39 @@ public class SystemDetector {
                     System.getProperty("os.name", "")
                             .toLowerCase();
 
-            String javaVendor =
-                    System.getProperty("java.vendor", "")
-                            .toLowerCase();
-
             String runtimeName =
                     System.getProperty("java.runtime.name", "")
+                            .toLowerCase();
+
+            String arch =
+                    System.getProperty("os.arch", "")
                             .toLowerCase();
 
             int cores =
                     Runtime.getRuntime()
                             .availableProcessors();
 
-            long maxMemoryMB =
-                    Runtime.getRuntime()
-                            .maxMemory() /
-                            (1024 * 1024);
+            boolean mobileCPU =
+                    arch.contains("aarch64") ||
+                    arch.contains("arm");
 
             boolean isAndroid =
                     osName.contains("android") ||
-                    javaVendor.contains("android") ||
+
                     runtimeName.contains("android") ||
+
+                    (osName.contains("linux") && mobileCPU) ||
+
                     System.getProperty("pojav.launcher") != null;
 
             if (isAndroid) {
 
-                if (maxMemoryMB <= 2048 || cores <= 4) {
+                if (cores <= 4) {
 
                     detectedType =
                             DeviceType.LOW_END_MOBILE;
 
-                } else if (maxMemoryMB <= 4096) {
+                } else if (cores <= 6) {
 
                     detectedType =
                             DeviceType.MID_RANGE_MOBILE;
@@ -74,12 +74,12 @@ public class SystemDetector {
 
             } else {
 
-                if (maxMemoryMB <= 4096 || cores <= 4) {
+                if (cores <= 4) {
 
                     detectedType =
                             DeviceType.LOW_END_PC;
 
-                } else if (maxMemoryMB <= 8192) {
+                } else if (cores <= 8) {
 
                     detectedType =
                             DeviceType.MID_RANGE_PC;
@@ -94,6 +94,13 @@ public class SystemDetector {
             PerformancePlus.LOGGER.info(
                     "Detected device type: {}",
                     detectedType
+            );
+
+            PerformancePlus.LOGGER.info(
+                    "OS: {} | ARCH: {} | CORES: {}",
+                    osName,
+                    arch,
+                    cores
             );
 
         } catch (Exception e) {
